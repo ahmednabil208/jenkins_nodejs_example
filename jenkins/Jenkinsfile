@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Preparation') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                }
+            }
+        }
+
+        stage('CI') {
+            steps {
+                // Build with full Docker Hub repo name
+                sh 'docker build -t ahmednabil208/nodejs_img:v1 -f ../Dockerfile ..'
+                sh 'docker push ahmednabil208/nodejs_img:v1'
+            }
+        }
+
+        stage('CD') {
+            steps {
+                sh 'docker stop node_app || true'
+                sh 'docker rm node_app || true'
+                sh 'docker run -d --name node_app -p 3000:3000 ahmednabil208/nodejs_img:v1'
+            }
+        }
+    }
+}
