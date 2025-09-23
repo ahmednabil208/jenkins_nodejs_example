@@ -13,7 +13,7 @@ pipeline {
         stage('CI') {
             steps {
                 // Build with full Docker Hub repo name
-                sh 'docker build -t ahmednabil208/nodejs_img:v1 -f ../Dockerfile ..'
+                sh 'docker build . -t ahmednabil208/nodejs_img:v1 .'
                 sh 'docker push ahmednabil208/nodejs_img:v1'
             }
         }
