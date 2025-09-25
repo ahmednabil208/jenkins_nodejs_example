@@ -1,29 +1,30 @@
-pipeline {
+pipeline{
     agent any
 
-    stages {
-        stage('Preparation') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+    stages{
+        stage('preperation'){
+            steps{
+                git 'https://github.com/ahmednabil208/jenkins_nodejs_example.git'
                 }
+
+            }
+
+        stage('build'){
+            steps{
+                sh 'docker build -t ahmednabil20/nodejs_img:lts .'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                     sh "docker login -u $USERNAME -p $PASSWORD"
+                }
+                sh 'docker push ahmednabil20/nodejs_img:lts'    
             }
         }
-
-        stage('CI') {
-            steps {
-                // Build with full Docker Hub repo name
-                sh 'docker build -t ahmednabil20/nodejs_img:v1 .'
-                sh 'docker push ahmednabil20/nodejs_img:v1'
-            }
-        }
-
-        stage('CD') {
-            steps {
-                sh 'docker stop node_app || true'
-                sh 'docker rm node_app || true'
-                sh 'docker run -d --name node_app -p 3000:3000 ahmednabil208/nodejs_img:v1'
+        stage('Start Container'){
+            steps{
+                sh 'docker stop nodejs_app || true'
+                sh 'docker rm -f nodejs_app || true'
+                sh 'docker run -d -p 3000:3000 --name nodejs_app  ahmednabil20/nodejs_img:lts'
             }
         }
     }
 }
+
