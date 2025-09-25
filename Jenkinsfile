@@ -8,7 +8,7 @@ pipeline{
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                      sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
                 }
-                sh 'docker push ahmednabil20/nodejs_img:lts'    
+                echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin    
             }
         }
         stage('Start Container'){
