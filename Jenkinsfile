@@ -2,13 +2,6 @@ pipeline{
     agent any
 
     stages{
-        stage('preperation'){
-            steps{
-                git 'https://github.com/ahmednabil208/jenkins_nodejs_example.git'
-                }
-
-            }
-
         stage('build'){
             steps{
                 sh 'docker build -t ahmednabil20/nodejs_img:lts .'
