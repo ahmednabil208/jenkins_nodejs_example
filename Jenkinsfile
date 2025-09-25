@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh 'docker stop node_app || true'
                 sh 'docker rm node_app || true'
-                sh 'docker run -d --name node_app -p 3000:3000 ahmednabil208/nodejs_img:lts'
+                sh 'docker run -d --name node_app -p 3000:3000 ahmednabil20/nodejs_img:lts'
             }
         }
     }
