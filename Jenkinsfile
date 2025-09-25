@@ -6,7 +6,7 @@ pipeline{
             steps{
                 sh 'docker build -t ahmednabil20/nodejs_img:lts .'
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                     sh "docker login -u $USERNAME -p $PASSWORD"
+                     sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
                 }
                 sh 'docker push ahmednabil20/nodejs_img:lts'    
             }
